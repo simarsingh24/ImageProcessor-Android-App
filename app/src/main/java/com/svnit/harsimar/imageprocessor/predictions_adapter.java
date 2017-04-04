@@ -44,8 +44,8 @@ public class predictions_adapter extends RecyclerView.Adapter<predictions_adapte
 
     @Override
     public int getItemCount() {
-        //      return list.size();
-        return 10;
+              return list.size();
+        //return 10;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

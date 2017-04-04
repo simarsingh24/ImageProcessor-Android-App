@@ -122,9 +122,9 @@ public class MainActivity extends AppCompatActivity {
         mProgress.show();
         imageView=(ImageView)findViewById(R.id.main_image_view);
         final TextView hint=(TextView)findViewById(R.id.hint_tv);
-        //adapter.setData(Collections.<Concept>emptyList());
-
         uploadFABBtn.setEnabled(false);
+
+
         ClarifaiClient client = new ClarifaiBuilder(clientId, clientSecret)
                 .client(new OkHttpClient()).buildSync();
 
@@ -143,17 +143,17 @@ public class MainActivity extends AppCompatActivity {
                                 // ClarifaiInput.forImage(ClarifaiImage.of("https://samples.clarifai.com/demo-011.jpg"))
                                 ClarifaiInput.forImage(ClarifaiImage.of(imageBytes))
                         ).executeSync().get();
-                mProgress.dismiss();
-
                 return predictionResults;
             }
 
             @Override
             protected void onPostExecute(List<ClarifaiOutput<Concept>> clarifaiOutputs) {
                 super.onPostExecute(clarifaiOutputs);
+                mProgress.dismiss();
                 hint.setText("Predicted Results");
                 recyclerView.setHasFixedSize(true);
                 recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+                uploadFABBtn.setEnabled(true);
 
                 Log.d("harsimarSingh", clarifaiOutputs.get(0).data().toString());
                 adapter.setData(clarifaiOutputs.get(0).data());
