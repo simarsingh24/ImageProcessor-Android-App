@@ -1,6 +1,7 @@
 package com.svnit.harsimar.imageprocessor;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -37,6 +38,9 @@ import clarifai2.dto.model.ConceptModel;
 import clarifai2.dto.model.output.ClarifaiOutput;
 import clarifai2.dto.prediction.Concept;
 import okhttp3.OkHttpClient;
+
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 
 public class MainActivity extends AppCompatActivity {
     private FloatingActionButton uploadFABBtn;
@@ -86,6 +90,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onImagePicked(final byte[] imageBytes) {
+
+        final ProgressDialog mProgress=new ProgressDialog(MainActivity.this);
+        mProgress.setMessage("Please wait");
+        mProgress.show();
+        uploadFABBtn.setEnabled(false);
         ClarifaiClient client = new ClarifaiBuilder(clientId, clientSecret)
                 .client(new OkHttpClient()).buildSync();
 
@@ -96,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
                 try {
 
 
-                    ClarifaiClient client = new ClarifaiBuilder("TWLwx0Svio0V5WKuRZ1HejSVyYZtYTu8MydOT3yI", "1Lc3sttcMfHXzUcgZe3HVxkyWLHo77C3H6LmqxNs")
+                    ClarifaiClient client = new ClarifaiBuilder(clientId, clientSecret)
                             .client(new OkHttpClient()).buildSync();
                     final List<ClarifaiOutput<Concept>>
                             predictionResults = client.getDefaultModels().generalModel() // You can also do Clarifai.getModelByID("id") to get custom models
@@ -108,9 +117,7 @@ public class MainActivity extends AppCompatActivity {
 
 
                     Log.d("harsimarSingh", predictionResults.get(0).data().toString());
-
-
-
+                    mProgress.dismiss();
                 }catch (Exception e){e.printStackTrace();}
 
             }
