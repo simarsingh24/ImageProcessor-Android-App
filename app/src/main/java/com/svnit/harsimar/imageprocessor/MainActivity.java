@@ -9,6 +9,8 @@ import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -25,6 +27,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -36,6 +39,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 import clarifai2.api.ClarifaiBuilder;
 import clarifai2.api.ClarifaiClient;
@@ -68,6 +72,10 @@ public class MainActivity extends AppCompatActivity implements
     final static String clientId = "TWLwx0Svio0V5WKuRZ1HejSVyYZtYTu8MydOT3yI";
     final static String clientSecret = "1Lc3sttcMfHXzUcgZe3HVxkyWLHo77C3H6LmqxNs";
 
+
+    static public Bitmap imageBitmap=null;
+    static public byte[] imageInBytes=null;
+
     private final predictions_adapter adapter = new predictions_adapter();
     private ImageView imageView;
     private RecyclerView recyclerView;
@@ -76,14 +84,17 @@ public class MainActivity extends AppCompatActivity implements
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
-    private double currentLatitude;
-    private double currentLongitude;
+    static public double currentLatitude;
+    static public double currentLongitude;
+
 
 
     @Override
     protected void onStart() {
         super.onStart();
         recyclerView = (RecyclerView) findViewById(R.id.main_recycler_view);
+
+
         LocationManager locationManager = (LocationManager)
                 getSystemService(Context.LOCATION_SERVICE);
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
@@ -104,6 +115,8 @@ public class MainActivity extends AppCompatActivity implements
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                 .setInterval(10 * 1000)        // 10 seconds, in milliseconds
                 .setFastestInterval(1 * 1000); // 1 second, in milliseconds
+
+
 
 
     }
@@ -169,13 +182,14 @@ public class MainActivity extends AppCompatActivity implements
         }
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            imageBitmap = (Bitmap) extras.get("data");
             imageView.setImageBitmap(imageBitmap);
 
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
             byte[] byteArray = stream.toByteArray();
             if (byteArray != null) {
+                imageInBytes=byteArray;
                 onImagePicked(byteArray);
             }
 
@@ -273,7 +287,7 @@ public class MainActivity extends AppCompatActivity implements
                     uploadFABBtn.setEnabled(true);
                     return;
                 }
-                hint.setText("Predicted Results");
+                hint.setText("Select Appropriate Label : ");
                 final List<ClarifaiOutput<Concept>> clarifaiOutputs = response.get();
                 if (clarifaiOutputs.isEmpty()) {
                     Toast.makeText(MainActivity.this, "Empty Response From API", Toast.LENGTH_SHORT).show();
@@ -321,7 +335,9 @@ public class MainActivity extends AppCompatActivity implements
             currentLatitude = location.getLatitude();
             currentLongitude = location.getLongitude();
 
-            Toast.makeText(this, currentLatitude + " WORKS " + currentLongitude + "", Toast.LENGTH_LONG).show();
+            //Toast.makeText(this, currentLatitude + " WORKS " + currentLongitude + "", Toast.LENGTH_LONG).show();
+
+
         }
     }
 
@@ -365,6 +381,7 @@ public class MainActivity extends AppCompatActivity implements
         currentLatitude = location.getLatitude();
         currentLongitude = location.getLongitude();
 
-        Toast.makeText(this, currentLatitude + " WORKS " + currentLongitude + "", Toast.LENGTH_LONG).show();
+
     }
+
 }
