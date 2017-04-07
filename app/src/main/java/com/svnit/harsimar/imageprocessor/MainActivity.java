@@ -15,6 +15,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -60,8 +61,10 @@ public class MainActivity extends AppCompatActivity implements
         LocationListener {
 
     private FloatingActionButton uploadFABBtn;
+
     final int PICK_IMAGE = 1;
     final int REQUEST_IMAGE_CAPTURE = 2;
+
     final static String clientId = "TWLwx0Svio0V5WKuRZ1HejSVyYZtYTu8MydOT3yI";
     final static String clientSecret = "1Lc3sttcMfHXzUcgZe3HVxkyWLHo77C3H6LmqxNs";
 
@@ -145,13 +148,13 @@ public class MainActivity extends AppCompatActivity implements
         uploadFABBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(new Intent(Intent.ACTION_GET_CONTENT).setType("image/*"), PICK_IMAGE);
-              /*  Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+              //  startActivityForResult(new Intent(Intent.ACTION_GET_CONTENT).setType("image/*"), PICK_IMAGE);
+
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
                     startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
                 }
-                */
-                Log.d("harsimarSingh", "outside");
+
             }
         });
     }
@@ -159,6 +162,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onActivityResult(int requestCode, int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        imageView = (ImageView) findViewById(R.id.main_image_view);
 
         if (resultCode != RESULT_OK) {
             return;
@@ -167,6 +171,14 @@ public class MainActivity extends AppCompatActivity implements
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             imageView.setImageBitmap(imageBitmap);
+
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            byte[] byteArray = stream.toByteArray();
+            if (byteArray != null) {
+                onImagePicked(byteArray);
+            }
+
         }
         switch (requestCode) {
             case PICK_IMAGE:
