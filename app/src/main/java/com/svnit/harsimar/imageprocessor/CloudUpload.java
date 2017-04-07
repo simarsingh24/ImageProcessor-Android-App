@@ -3,8 +3,6 @@ package com.svnit.harsimar.imageprocessor;
 import android.graphics.Bitmap;
 import android.location.Address;
 import android.location.Geocoder;
-import android.provider.ContactsContract;
-import android.provider.Telephony;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -76,10 +74,6 @@ public class CloudUpload extends AppCompatActivity {
         
         
     }
-
-    private void startFirebaseUpload() {
-    }
-
     private List<Address> gpsConverter(double latitude, double longitude) throws IOException {
         Geocoder geocoder;
         List<Address> addresses;
@@ -87,9 +81,17 @@ public class CloudUpload extends AppCompatActivity {
 
         addresses = geocoder.getFromLocation(latitude, longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
 
-        
+
         return addresses;
 
     }
+
+    private void startFirebaseUpload() {
+
+
+
+    }
+
+
 
 }

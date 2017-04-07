@@ -29,7 +29,20 @@ dependencies {
     compile(
             //api for image processing
             'com.clarifai.clarifai-api2:core:2.0.2',
-            'com.clarifai:clarifai-api-java:1.2.0'
+            'com.clarifai:clarifai-api-java:1.2.0',
+            //for firebase
+            'com.firebaseui:firebase-ui-database:1.2.0',
+            'com.firebase:firebase-client-android:2.5.2',
+            'com.google.firebase:firebase-database:10.2.0',
+            'com.google.firebase:firebase-storage:10.2.0',
+            'com.google.firebase:firebase-messaging:10.2.0',
+            'com.firebaseui:firebase-ui-storage:1.2.0',
+            'com.google.firebase:firebase-auth:10.2.0',
+            //for piccaso
+            'com.squareup.picasso:picasso:2.5.2',
+            //for image cropper
+            'com.theartofdev.edmodo:android-image-cropper:2.3.+'
+
     )
 
     compile 'com.android.support:appcompat-v7:25.3.1'
