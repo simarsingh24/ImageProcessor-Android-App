@@ -49,6 +49,7 @@ import clarifai2.dto.input.image.ClarifaiImage;
 import clarifai2.dto.model.output.ClarifaiOutput;
 import clarifai2.dto.prediction.Concept;
 import okhttp3.OkHttpClient;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
@@ -56,7 +57,6 @@ import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListe
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-
 
 
 public class MainActivity extends AppCompatActivity implements
@@ -73,8 +73,8 @@ public class MainActivity extends AppCompatActivity implements
     final static String clientSecret = "1Lc3sttcMfHXzUcgZe3HVxkyWLHo77C3H6LmqxNs";
 
 
-    static public Bitmap imageBitmap=null;
-    static public byte[] imageInBytes=null;
+    static public Bitmap imageBitmap = null;
+    static public byte[] imageInBytes = null;
 
     private final predictions_adapter adapter = new predictions_adapter();
     private ImageView imageView;
@@ -86,7 +86,6 @@ public class MainActivity extends AppCompatActivity implements
     private LocationRequest mLocationRequest;
     static public double currentLatitude;
     static public double currentLongitude;
-
 
 
     @Override
@@ -115,8 +114,6 @@ public class MainActivity extends AppCompatActivity implements
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                 .setInterval(10 * 1000)        // 10 seconds, in milliseconds
                 .setFastestInterval(1 * 1000); // 1 second, in milliseconds
-
-
 
 
     }
@@ -161,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements
         uploadFABBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              //  startActivityForResult(new Intent(Intent.ACTION_GET_CONTENT).setType("image/*"), PICK_IMAGE);
+                //  startActivityForResult(new Intent(Intent.ACTION_GET_CONTENT).setType("image/*"), PICK_IMAGE);
 
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
@@ -185,11 +182,14 @@ public class MainActivity extends AppCompatActivity implements
             imageBitmap = (Bitmap) extras.get("data");
             imageView.setImageBitmap(imageBitmap);
 
+           // Log.d("harsimarSingh", data.getData().toString());
+
+
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
             byte[] byteArray = stream.toByteArray();
             if (byteArray != null) {
-                imageInBytes=byteArray;
+                imageInBytes = byteArray;
                 onImagePicked(byteArray);
             }
 
@@ -325,6 +325,16 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onConnected(Bundle bundle) {
 
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
         Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 
         if (location == null) {

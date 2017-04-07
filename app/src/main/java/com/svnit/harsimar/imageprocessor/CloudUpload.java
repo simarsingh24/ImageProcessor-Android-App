@@ -1,4 +1,4 @@
-    package com.svnit.harsimar.imageprocessor;
+package com.svnit.harsimar.imageprocessor;
 
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
@@ -12,20 +12,28 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.firebase.client.Firebase;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
+
+import static com.svnit.harsimar.imageprocessor.MainActivity.imageBitmap;
 
 public class CloudUpload extends AppCompatActivity {
 
+    private static final int MAX_LENGTH = 30;
     Bitmap image=null;
     private double latitude;
     private double longitude;
@@ -37,6 +45,7 @@ public class CloudUpload extends AppCompatActivity {
     private EditText gpsText;
     private Button uploadBtn;
     private Uri mImageUri;
+
 
     private StorageReference mStorage;
     private ProgressDialog mProgress;
@@ -105,13 +114,48 @@ public class CloudUpload extends AppCompatActivity {
         mStorage= FirebaseStorage.getInstance().getReference();
         mDatabase= FirebaseDatabase.getInstance().getReference().child("ProcessedImages");
 
-        DatabaseReference newPost=mDatabase.push();
-        Log.d("harsimarSINGH",newPost.toString());
-        newPost.child("label").setValue(label);
-        newPost.child("latitude").setValue(latitude);
-        newPost.child("longitude").setValue(longitude);
+        StorageReference filepath=
+                mStorage.child("MobileCaptures").child(random());
+        filepath.putBytes(converBitmap(image)).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                Uri downloadUri=taskSnapshot.getDownloadUrl();
+
+                DatabaseReference newPost=mDatabase.push();
+                Log.d("harsimarSINGH",newPost.toString());
+
+                newPost.child("imageLink").setValue(downloadUri.toString().trim());
+                newPost.child("label").setValue(label);
+                newPost.child("latitude").setValue(String.valueOf(latitude));
+                newPost.child("longitude").setValue(String.valueOf(longitude));
+
+                finish();
+
+                Toast.makeText(CloudUpload.this,"Done Uploading.", Toast.LENGTH_SHORT).show();
+            }
+        });
 
 
+    }
+
+    private byte[] converBitmap(Bitmap imageBitmap) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] byteArray = stream.toByteArray();
+        return byteArray;
+    }
+
+    public static String random() {
+        Random generator = new Random();
+        StringBuilder randomStringBuilder = new StringBuilder();
+        int randomLength = generator.nextInt(MAX_LENGTH);
+        char tempChar;
+        for (int i = 0; i < randomLength; i++){
+            tempChar = (char) (generator.nextInt(96) + 32);
+            randomStringBuilder.append(tempChar);
+        }
+        return randomStringBuilder.toString();
     }
 
     private void firebaseInit() {
