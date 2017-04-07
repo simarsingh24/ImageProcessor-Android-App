@@ -32,6 +32,12 @@ dependencies {
 
             //for firebase
 
+            'com.google.firebase:firebase-database:10.2.0',
+             'com.google.firebase:firebase-storage:10.2.0',
+             'com.firebase:firebase-client-android:2.5.2',
+             'com.google.android.gms:play-services-auth:10.2.0',
+             'com.firebaseui:firebase-ui-database:1.2.0',
+             'com.firebaseui:firebase-ui-storage:1.2.0',
             //for piccaso
             'com.squareup.picasso:picasso:2.5.2',
             //for image cropper
