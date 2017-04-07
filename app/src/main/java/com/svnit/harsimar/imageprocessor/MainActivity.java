@@ -1,6 +1,7 @@
 package com.svnit.harsimar.imageprocessor;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -12,6 +13,8 @@ import android.location.LocationManager;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.support.annotation.StringRes;
 import android.support.design.widget.FloatingActionButton;
@@ -107,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         TextView hintTv=(TextView)findViewById(R.id.hint_tv);
-        hintTv.setText("Please click on Action Button to continue!");
+        hintTv.setText(                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     "Please click on Action Button to continue!");
 
 
         uploadFABBtn = (FloatingActionButton) findViewById(R.id.uploadFAB);
@@ -127,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode != RESULT_OK) {
@@ -141,22 +144,63 @@ public class MainActivity extends AppCompatActivity {
         switch (requestCode) {
             case PICK_IMAGE:
                 Log.d("hasimarSingh","picked");
+
+                //ProgressDialog pd=new ProgressDialog(MainActivity.this);
+                final ProgressDialog pd = ProgressDialog.show(this, "Working..", "Image Conversion", true,false);
+
                 imageView=(ImageView)findViewById(R.id.main_image_view);
                 Uri uri=data.getData();
                 imageView.setImageURI(uri);
-                final byte[] imageBytes = getImageByte(this,data);
-                if (imageBytes != null) {
-                    onImagePicked(imageBytes);
-                }
-                Log.d("harsimarSingh","inside");
+                Handler handler = new Handler(Looper.getMainLooper());
+
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        final byte[] imageBytes = getImageByte(MainActivity.this,data);
+                        if (imageBytes != null) {
+                            onImagePicked(imageBytes);
+                        }
+                        Log.d("harsimarSingh","inside");
+                    pd.dismiss();
+                    }
+                },100 );
                 break;
         }
     }
 
+
+    private byte[] getImageByte(Context context, Intent data) {
+        InputStream inStream = null;
+        Bitmap bitmap = null;
+
+        try {
+            inStream = context.getContentResolver().openInputStream(data.getData());
+            bitmap = BitmapFactory.decodeStream(inStream);
+            final ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outStream);
+            return outStream.toByteArray();
+        } catch (FileNotFoundException e) {
+            return null;
+        } finally {
+            if (inStream != null) {
+                try {
+                    inStream.close();
+                } catch (IOException ignored) {
+                }
+            }
+            if (bitmap != null) {
+                bitmap.recycle();
+            }
+        }
+    }
+
+
+
     private void onImagePicked(final byte[] imageBytes) {
 
         final ProgressDialog mProgress=new ProgressDialog(MainActivity.this);
-        mProgress.setMessage("Please wait");
+        mProgress.setTitle("Contacting API");
+        mProgress.setMessage("Please Wait...");
         mProgress.show();
         imageView=(ImageView)findViewById(R.id.main_image_view);
         final TextView hint=(TextView)findViewById(R.id.hint_tv);
@@ -201,28 +245,4 @@ public class MainActivity extends AppCompatActivity {
         }.execute();
     }
 
-    private byte[] getImageByte(Context context, Intent data) {
-        InputStream inStream = null;
-        Bitmap bitmap = null;
-        try {
-            inStream = context.getContentResolver().openInputStream(data.getData());
-            bitmap = BitmapFactory.decodeStream(inStream);
-            final ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outStream);
-            return outStream.toByteArray();
-        } catch (FileNotFoundException e) {
-            return null;
-        } finally {
-            if (inStream != null) {
-                try {
-                    inStream.close();
-                } catch (IOException ignored) {
-                }
-            }
-            if (bitmap != null) {
-                bitmap.recycle();
-            }
-        }
-
-    }
 }
