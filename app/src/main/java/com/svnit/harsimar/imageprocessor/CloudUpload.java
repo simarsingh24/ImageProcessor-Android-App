@@ -1,17 +1,23 @@
     package com.svnit.harsimar.imageprocessor;
 
+import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.location.Address;
 import android.location.Geocoder;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.firebase.client.Firebase;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -30,6 +36,11 @@ public class CloudUpload extends AppCompatActivity {
     private EditText labelText;
     private EditText gpsText;
     private Button uploadBtn;
+    private Uri mImageUri;
+
+    private StorageReference mStorage;
+    private ProgressDialog mProgress;
+    private DatabaseReference mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +74,10 @@ public class CloudUpload extends AppCompatActivity {
         String postalCode = addresses.get(0).getPostalCode();
         String knownName = addresses.get(0).getFeatureName();
 
-        gpsText.setText(address);
+        gpsText.setText(address+", "+city+", "+state);
+
+        mStorage= FirebaseStorage.getInstance().getReference();
+        mDatabase= FirebaseDatabase.getInstance().getReference().child("ProcessedImages");
 
 
         uploadBtn.setOnClickListener(new View.OnClickListener() {
@@ -91,6 +105,12 @@ public class CloudUpload extends AppCompatActivity {
 
     private void startFirebaseUpload() {
         firebaseInit();
+        DatabaseReference newPost=mDatabase.push();
+        Log.d("harsimarSINGH",newPost.toString());
+        newPost.child("label").setValue(label);
+        newPost.child("latitude").setValue(latitude);
+        newPost.child("longitude").setValue(longitude);
+
 
     }
 
