@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "899318611252",
+    "firebase_url": "https://imageprocessor-a8fed.firebaseio.com",
+    "project_id": "imageprocessor-a8fed",
+    "storage_bucket": "imageprocessor-a8fed.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:899318611252:android:bca812978de753a2",
+        "android_client_info": {
+          "package_name": "com.svnit.harsimar.imageprocessor"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "899318611252-eogo53aka5pb4ccvif7e07lqpetejhpr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.svnit.harsimar.imageprocessor",
+            "certificate_hash": "b50c10c18fd715c8cf7894a89470ab5a8c385b78"
+          }
+        },
+        {
+          "client_id": "899318611252-umj0mvd3kfuuvs9nbe0cjbnc51maie26.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyANlVNTjxmODsGJ-1sq35RcwQqAbx7uy2c"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "899318611252-umj0mvd3kfuuvs9nbe0cjbnc51maie26.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

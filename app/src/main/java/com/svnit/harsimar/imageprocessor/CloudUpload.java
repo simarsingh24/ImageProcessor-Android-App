@@ -1,4 +1,4 @@
-package com.svnit.harsimar.imageprocessor;
+    package com.svnit.harsimar.imageprocessor;
 
 import android.graphics.Bitmap;
 import android.location.Address;
@@ -9,6 +9,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+
+import com.firebase.client.Firebase;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -87,11 +90,15 @@ public class CloudUpload extends AppCompatActivity {
     }
 
     private void startFirebaseUpload() {
-
-
+        firebaseInit();
 
     }
 
+    private void firebaseInit() {
+        Firebase.setAndroidContext(this);
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+
+    }
 
 
 }
