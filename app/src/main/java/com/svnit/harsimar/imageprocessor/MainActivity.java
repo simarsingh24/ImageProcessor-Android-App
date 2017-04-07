@@ -30,6 +30,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -205,40 +206,46 @@ public class MainActivity extends AppCompatActivity {
         imageView=(ImageView)findViewById(R.id.main_image_view);
         final TextView hint=(TextView)findViewById(R.id.hint_tv);
         uploadFABBtn.setEnabled(false);
+        adapter.setData(Collections.<Concept>emptyList());
 
-
-        ClarifaiClient client = new ClarifaiBuilder(clientId, clientSecret)
-                .client(new OkHttpClient()).buildSync();
-
-        new AsyncTask<Void,Void,List<ClarifaiOutput<Concept>>>(){
+        new AsyncTask<Void,Void,ClarifaiResponse<List<ClarifaiOutput<Concept>>>>(){
 
             @Override
-            protected List<ClarifaiOutput<Concept>> doInBackground(Void... params) {
+            protected ClarifaiResponse<List<ClarifaiOutput<Concept>>> doInBackground(Void... params) {
                 Log.d("harsimarSingh","inside Async");
 
                 ClarifaiClient client = new ClarifaiBuilder(clientId, clientSecret)
                         .client(new OkHttpClient()).buildSync();
-                List<ClarifaiOutput<Concept>>
-                        predictionResults = client.getDefaultModels().generalModel() // You can also do Clarifai.getModelByID("id") to get custom models
-                        .predict()
-                        .withInputs(
-                                // ClarifaiInput.forImage(ClarifaiImage.of("https://samples.clarifai.com/demo-011.jpg"))
-                                ClarifaiInput.forImage(ClarifaiImage.of(imageBytes))
-                        ).executeSync().get();
-                return predictionResults;
+                return client.getDefaultModels().generalModel().predict()
+                        .withInputs(ClarifaiInput.forImage(ClarifaiImage.of(imageBytes))
+                        ).executeSync();
             }
 
             @Override
-            protected void onPostExecute(List<ClarifaiOutput<Concept>> clarifaiOutputs) {
-                super.onPostExecute(clarifaiOutputs);
+            protected void onPostExecute(ClarifaiResponse<List<ClarifaiOutput<Concept>>> response) {
+                super.onPostExecute(response);
                 mProgress.dismiss();
-                hint.setText("Predicted Results");
                 recyclerView.setHasFixedSize(true);
                 recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
                 uploadFABBtn.setEnabled(true);
 
+                if (!response.isSuccessful()) {
+
+                    Toast.makeText(MainActivity.this,"Problem Contacting API",Toast.LENGTH_SHORT).show();
+                    adapter.setData(Collections.<Concept>emptyList());
+                    uploadFABBtn.setEnabled(true);
+                    return;
+                }
+                hint.setText("Predicted Results");
+                final List<ClarifaiOutput<Concept>> clarifaiOutputs = response.get();
+                if (clarifaiOutputs.isEmpty()) {
+                    Toast.makeText(MainActivity.this,"Empty Response From API",Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 Log.d("harsimarSingh", clarifaiOutputs.get(0).data().toString());
                 adapter.setData(clarifaiOutputs.get(0).data());
+
                 recyclerView.setAdapter(adapter);
 
             }
