@@ -1,12 +1,21 @@
 package com.svnit.harsimar.imageprocessor;
 
 import android.graphics.Bitmap;
+import android.location.Address;
+import android.location.Geocoder;
 import android.provider.ContactsContract;
+import android.provider.Telephony;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+
+import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 
 public class CloudUpload extends AppCompatActivity {
 
@@ -14,6 +23,7 @@ public class CloudUpload extends AppCompatActivity {
     private double latitude;
     private double longitude;
     private String label;
+    private List<Address> addresses= Collections.emptyList();
 
     private ImageView imageView;
     private EditText labelText;
@@ -26,7 +36,7 @@ public class CloudUpload extends AppCompatActivity {
         setContentView(R.layout.activity_cloud_upload);
         Bundle activitySentData= getIntent().getExtras();
 
-        image=(Bitmap) activitySentData.getParcelable(predictions_adapter.IMAGE_KEY);
+        image=activitySentData.getParcelable(predictions_adapter.IMAGE_KEY);
         latitude=activitySentData.getDouble(predictions_adapter.LAT_KEY);
         longitude=activitySentData.getDouble(predictions_adapter.LON_KEY);
         label=activitySentData.getString(predictions_adapter.LABEL_KEY);
@@ -37,9 +47,49 @@ public class CloudUpload extends AppCompatActivity {
         uploadBtn=(Button)findViewById(R.id.fireabaseUpload_button);
 
         labelText.setText(label);
+        imageView.setImageBitmap(image);
+
+        try {
+            addresses=gpsConverter(latitude,longitude);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+        String city = addresses.get(0).getLocality();
+        String state = addresses.get(0).getAdminArea();
+        String country = addresses.get(0).getCountryName();
+        String postalCode = addresses.get(0).getPostalCode();
+        String knownName = addresses.get(0).getFeatureName();
+
+        gpsText.setText(address);
+
+
+        uploadBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startFirebaseUpload();
+            }
+
+            
+        });
         
+        
+    }
 
+    private void startFirebaseUpload() {
+    }
 
+    private List<Address> gpsConverter(double latitude, double longitude) throws IOException {
+        Geocoder geocoder;
+        List<Address> addresses;
+        geocoder = new Geocoder(this, Locale.getDefault());
+
+        addresses = geocoder.getFromLocation(latitude, longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+
+        
+        return addresses;
 
     }
+
 }
