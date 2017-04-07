@@ -47,7 +47,6 @@ public class CloudUpload extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cloud_upload);
         Bundle activitySentData= getIntent().getExtras();
-
         image=activitySentData.getParcelable(predictions_adapter.IMAGE_KEY);
         latitude=activitySentData.getDouble(predictions_adapter.LAT_KEY);
         longitude=activitySentData.getDouble(predictions_adapter.LON_KEY);
@@ -76,10 +75,6 @@ public class CloudUpload extends AppCompatActivity {
 
         gpsText.setText(address+", "+city+", "+state);
 
-        mStorage= FirebaseStorage.getInstance().getReference();
-        mDatabase= FirebaseDatabase.getInstance().getReference().child("ProcessedImages");
-
-
         uploadBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -104,7 +99,12 @@ public class CloudUpload extends AppCompatActivity {
     }
 
     private void startFirebaseUpload() {
+
         firebaseInit();
+
+        mStorage= FirebaseStorage.getInstance().getReference();
+        mDatabase= FirebaseDatabase.getInstance().getReference().child("ProcessedImages");
+
         DatabaseReference newPost=mDatabase.push();
         Log.d("harsimarSINGH",newPost.toString());
         newPost.child("label").setValue(label);

@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "899318611252-b2rp2qon4tbfau2aaic1k0vm9sv9p97d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.svnit.harsimar.imageprocessor",
+            "certificate_hash": "89b9f02cd4259f804ac47c829befd70bbdacaf57"
+          }
+        },
+        {
           "client_id": "899318611252-eogo53aka5pb4ccvif7e07lqpetejhpr.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
