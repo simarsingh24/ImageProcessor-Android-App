@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.firebase.client.Firebase;
@@ -109,6 +110,10 @@ public class CloudUpload extends AppCompatActivity {
 
     private void startFirebaseUpload() {
 
+        final ProgressDialog mProgress=new ProgressDialog(CloudUpload.this);
+        mProgress.setMessage("Uploading To Firebase...");
+        mProgress.setTitle("Please Wait");
+        mProgress.show();
         firebaseInit();
 
         mStorage= FirebaseStorage.getInstance().getReference();
@@ -120,19 +125,19 @@ public class CloudUpload extends AppCompatActivity {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
-                Uri downloadUri=taskSnapshot.getDownloadUrl();
+                Uri downloadUri = taskSnapshot.getDownloadUrl();
 
-                DatabaseReference newPost=mDatabase.push();
-                Log.d("harsimarSINGH",newPost.toString());
+                DatabaseReference newPost = mDatabase.push();
+                Log.d("harsimarSINGH", newPost.toString());
 
                 newPost.child("imageLink").setValue(downloadUri.toString().trim());
                 newPost.child("label").setValue(label);
                 newPost.child("latitude").setValue(String.valueOf(latitude));
                 newPost.child("longitude").setValue(String.valueOf(longitude));
 
+                mProgress.dismiss();
+                Toast.makeText(CloudUpload.this, "Done Uploading.", Toast.LENGTH_SHORT).show();
                 finish();
-
-                Toast.makeText(CloudUpload.this,"Done Uploading.", Toast.LENGTH_SHORT).show();
             }
         });
 
