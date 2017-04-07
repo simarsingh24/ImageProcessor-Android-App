@@ -147,9 +147,11 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
+        Intent i=new Intent(MainActivity.this,LoadImages.class);
+        startActivity(i);
         return super.onOptionsItemSelected(item);
 
-    
 
     }
 
