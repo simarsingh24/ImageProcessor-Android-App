@@ -26,7 +26,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".CloudUpload" />
-        <activity android:name=".LoadImages"></activity>
+        <activity android:name=".LoadImages" />
+        <activity android:name=".FetchImages"></activity>
     </application>
 
 </manifest>

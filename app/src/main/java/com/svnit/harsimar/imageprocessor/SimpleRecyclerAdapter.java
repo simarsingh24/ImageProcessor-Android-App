@@ -14,6 +14,8 @@ import java.util.List;
 
 import clarifai2.dto.prediction.Concept;
 
+import static com.svnit.harsimar.imageprocessor.predictions_adapter.LABEL_KEY;
+
 public class SimpleRecyclerAdapter extends RecyclerView.Adapter<SimpleRecyclerAdapter.ViewHolder> {
 
     public ArrayList<String> list;
@@ -43,8 +45,16 @@ public class SimpleRecyclerAdapter extends RecyclerView.Adapter<SimpleRecyclerAd
         final String labelString = list.get(position);
         holder.textView.setText(labelString);
         holder.mView.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
+                Context context=v.getContext();
+                if(!labelString.isEmpty()){
+
+                    Intent i=new Intent(context,FetchImages.class);
+                    i.putExtra(LABEL_KEY,labelString);
+                    context.startActivity(i);
+                }
 
             }
         });
