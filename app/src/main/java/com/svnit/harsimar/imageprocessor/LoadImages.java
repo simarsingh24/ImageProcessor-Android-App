@@ -5,20 +5,24 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
-import android.widget.ListView;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
-import com.firebase.client.Firebase;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.Map;
 
 public class LoadImages extends AppCompatActivity {
-    private ListView loadRecycler;
+    private RecyclerView loadRecycler;
     private DatabaseReference databaseReference;
-
 
     @Override
     protected void onStart() {
@@ -36,14 +40,37 @@ public class LoadImages extends AppCompatActivity {
 
         databaseReference= FirebaseDatabase.getInstance().getReference().child("ProcessedImages");
 
-        loadRecycler=(ListView) findViewById(R.id.load_recycler);
+        loadRecycler=(RecyclerView) findViewById(R.id.load_recycler);
+        loadRecycler.setHasFixedSize(true);
+        loadRecycler.setLayoutManager(new LinearLayoutManager(this));
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
 
-        String[] fetchedItems={"harsimar","sinagh","is","here"};
+                collectLabel((Map<String,Object>) dataSnapshot.getValue());
 
-        ListAdapter folderAdapter= new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,fetchedItems);
+            }
 
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+    private void collectLabel(Map<String,Object> labels){
+        ArrayList<String> labelName=new ArrayList<>();
+        for (Map.Entry<String, Object> entry : labels.entrySet()){
+
+            Map singleUser = (Map) entry.getValue();
+
+            labelName.add((String) singleUser.get("label"));
+        }
+        Log.d("harsimarSingh",labelName.toString());
+
+        SimpleRecyclerAdapter folderAdapter=new SimpleRecyclerAdapter();
+        folderAdapter.setData(labelName);
         loadRecycler.setAdapter(folderAdapter);
-
 
 
     }
@@ -58,4 +85,5 @@ public class LoadImages extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
 }
