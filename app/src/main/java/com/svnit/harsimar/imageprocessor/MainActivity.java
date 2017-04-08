@@ -95,6 +95,8 @@ public class MainActivity extends AppCompatActivity implements
         super.onStart();
         recyclerView = (RecyclerView) findViewById(R.id.main_recycler_view);
 
+        ActivityCompat.requestPermissions(MainActivity.this,
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1);
 
         LocationManager locationManager = (LocationManager)
                 getSystemService(Context.LOCATION_SERVICE);
@@ -167,6 +169,9 @@ public class MainActivity extends AppCompatActivity implements
                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                     1);
         }
+        ActivityCompat.requestPermissions(MainActivity.this,
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1);
+
 
         TextView hintTv = (TextView) findViewById(R.id.hint_tv);
         hintTv.setText("Please click on Action Button to continue!");

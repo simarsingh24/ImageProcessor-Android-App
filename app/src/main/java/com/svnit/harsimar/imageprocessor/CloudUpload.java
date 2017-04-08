@@ -1,10 +1,15 @@
 package com.svnit.harsimar.imageprocessor;
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.LocationManager;
 import android.net.Uri;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,6 +21,9 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.firebase.client.Firebase;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -48,14 +56,23 @@ public class CloudUpload extends AppCompatActivity {
     private Button uploadBtn;
     private Uri mImageUri;
 
-
     private StorageReference mStorage;
     private ProgressDialog mProgress;
     private DatabaseReference mDatabase;
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        Firebase.setAndroidContext(this);
+
+
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
         setContentView(R.layout.activity_cloud_upload);
         Bundle activitySentData= getIntent().getExtras();
         image=activitySentData.getParcelable(predictions_adapter.IMAGE_KEY);
@@ -151,6 +168,7 @@ public class CloudUpload extends AppCompatActivity {
         byte[] byteArray = stream.toByteArray();
         return byteArray;
     }
+
 
     public static String random() {
         Random generator = new Random();
