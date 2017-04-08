@@ -39,6 +39,7 @@ public class CloudUpload extends AppCompatActivity {
     private double latitude;
     private double longitude;
     private String label;
+    private String uploadAddress;
     private List<Address> addresses= Collections.emptyList();
 
     private ImageView imageView;
@@ -85,6 +86,7 @@ public class CloudUpload extends AppCompatActivity {
 
         gpsText.setText(address+", "+city+", "+state);
 
+        uploadAddress=address+", "+city+", "+state;
         uploadBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -132,8 +134,7 @@ public class CloudUpload extends AppCompatActivity {
 
                 newPost.child("imageLink").setValue(downloadUri.toString().trim());
                 newPost.child("label").setValue(label);
-                newPost.child("latitude").setValue(String.valueOf(latitude));
-                newPost.child("longitude").setValue(String.valueOf(longitude));
+                newPost.child("location").setValue(uploadAddress);
 
                 mProgress.dismiss();
                 Toast.makeText(CloudUpload.this, "Done Uploading.", Toast.LENGTH_SHORT).show();

@@ -1,6 +1,9 @@
 package com.svnit.harsimar.imageprocessor;
 
 import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -21,7 +24,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class LoadImages extends AppCompatActivity {
@@ -43,7 +50,8 @@ public class LoadImages extends AppCompatActivity {
                     protected void populateViewHolder(ImageViewHolder viewHolder, imageData model, int position) {
                         viewHolder.setImageLabel(model.getLabel());
                         viewHolder.setImage(getApplicationContext(),model.getImageLink());
-                        viewHolder.setLoctation("chandigarh");
+                        viewHolder.setLocation(model.getLocation());
+
                     }
                 };
         loadRecycler.setAdapter(firebaseRecyclerAdapter);
@@ -61,9 +69,9 @@ public class LoadImages extends AppCompatActivity {
             TextView imageLabel =(TextView)mView.findViewById(R.id.label_tv);
             imageLabel.setText(label);
         }
-        public void setLoctation(String location){
-            TextView imgLocation =(TextView)mView.findViewById(R.id.location_tv);
-            imgLocation.setText(location);
+        public void setLocation(String location){
+            TextView imageLocation =(TextView)mView.findViewById(R.id.location_tv);
+            imageLocation.setText(location);
         }
 
         public void setImage(Context context, String imageUri){
@@ -99,5 +107,15 @@ public class LoadImages extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+    private List<Address> gpsConverter(double latitude, double longitude) throws IOException {
+        Geocoder geocoder;
+        List<Address> addresses;
+        geocoder = new Geocoder(this, Locale.getDefault());
 
+        addresses = geocoder.getFromLocation(latitude, longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+
+
+        return addresses;
+
+    }
 }

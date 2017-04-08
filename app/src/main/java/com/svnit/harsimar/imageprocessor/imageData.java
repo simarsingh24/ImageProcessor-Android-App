@@ -2,10 +2,10 @@ package com.svnit.harsimar.imageprocessor;
 
 
 public class imageData {
-    private String imageLink, label, latitude, longitude;
+    private String imageLink, label,location;
 
     public imageData(){
-        
+
     }
 
     public String getImageLink() {
@@ -24,26 +24,18 @@ public class imageData {
         this.label = label;
     }
 
-    public String getLatitude() {
-        return latitude;
+    public String getLocation() {
+        return location;
     }
 
-    public void setLatitude(String latitude) {
-        this.latitude = latitude;
+    public void setLocation(String location) {
+        this.location = location;
     }
 
-    public String getLongitude() {
-        return longitude;
-    }
+    public imageData(String imageLink, String label, String location) {
 
-    public void setLongitude(String longitude) {
-        this.longitude = longitude;
-    }
-
-    public imageData(String imageLink, String label, String latitude, String longitude) {
         this.imageLink = imageLink;
         this.label = label;
-        this.latitude = latitude;
-        this.longitude = longitude;
+        this.location = location;
     }
 }
