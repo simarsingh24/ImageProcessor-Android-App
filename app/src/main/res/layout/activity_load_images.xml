@@ -10,7 +10,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Please select the folder..."
+        android:text="Photos..."
         android:textStyle="bold"
         android:textSize="20dp"
         android:padding="8dp"/>

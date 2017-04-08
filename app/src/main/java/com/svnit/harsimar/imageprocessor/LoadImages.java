@@ -43,38 +43,8 @@ public class LoadImages extends AppCompatActivity {
         loadRecycler=(RecyclerView) findViewById(R.id.load_recycler);
         loadRecycler.setHasFixedSize(true);
         loadRecycler.setLayoutManager(new LinearLayoutManager(this));
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                collectLabel((Map<String,Object>) dataSnapshot.getValue());
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
 
     }
-    private void collectLabel(Map<String,Object> labels){
-        ArrayList<String> labelName=new ArrayList<>();
-        for (Map.Entry<String, Object> entry : labels.entrySet()){
-
-            Map singleUser = (Map) entry.getValue();
-
-            labelName.add((String) singleUser.get("label"));
-        }
-        Log.d("harsimarSingh",labelName.toString());
-
-        SimpleRecyclerAdapter folderAdapter=new SimpleRecyclerAdapter();
-        folderAdapter.setData(labelName);
-        loadRecycler.setAdapter(folderAdapter);
-
-
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
