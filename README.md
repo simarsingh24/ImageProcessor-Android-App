@@ -3,7 +3,7 @@ This is a Android project showing how to use the Clarifai API in Android. It use
 It can classify the image you take on your phone, extract the tags and store it along with the location where the photo was taken on the cloud.
 You may also retrieve the images you took.
 
-##De tails
+## Details
 
 API Used--
 -Clarifai API (for image processing)
@@ -11,6 +11,6 @@ API Used--
 Backend Used--
 Firebase Backend 
   1-Firebase Realtime Database
-  2-Firebae Storag
+  2-Firebase Storage
  
 
