@@ -8,6 +8,7 @@ You may also retrieve the images you took.
 API Used--
 
 -Clarifai API (for image processing)
+
 -Piccaso API (for different image functions)
 
 Backend Used--
@@ -15,6 +16,7 @@ Backend Used--
 Firebase Backend 
 
 1-Firebase Realtime Database
+
 2-Firebase Storage
  
 
